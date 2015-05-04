@@ -5,11 +5,18 @@ Spell check html files
 It's working with :
 
 *   [LanguageTool](https://www.languagetool.org/)
+*   [Php Enchant](http://php.net/manual/en/book.enchant.php)
 *   [Guzzle](http://docs.guzzlephp.org)
 *   [Symfony Finder Component](http://symfony.com/doc/2.3/components/finder.html)
 *   [Glicer Simply-html Component](https://github.com/emmanuelroecker/php-simply-html)
 
-## Installation
+## Install LanguageTool Server
+
+Download and dezip [LanguageTool stand-alone for desktop](https://www.languagetool.org/) in a directory.
+
+Java must be installed
+
+## Install php-spellchecker
 
 This library can be found on [Packagist](https://packagist.org/packages/glicer/spell-checker).
 

@@ -19,9 +19,7 @@
 
 namespace GlSpellChecker;
 
-
 use GlHtml\GlHtml;
-use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Finder\SplFileInfo;
 use Symfony\Component\Finder\Finder;
@@ -37,47 +35,66 @@ class GlSpellChecker
     /**
      * @var int
      */
-    private $port = 8081;
+    private $languageToolServerPort = 8081;
 
     /**
      * @var string
      */
-    private $languagetool_language = 'fr';
-
-    /**
-     * @var string
-     */
-    private $enchant_language = "fr_FR";
-
+    private $languageToolLanguage = 'fr';
 
     /**
      * @var Process $languagetoolServer ;
      */
     private $languagetoolServer = null;
 
-    private $dictionnary;
-    private $broker;
+    /**
+     * @var Client
+     */
+    private $languagetoolClientHttp;
+
 
     /**
+     * @var string
+     */
+    private $enchantLanguage = "fr_FR";
+    private $enchantDictionnary;
+    private $enchantBroker;
+
+    /**
+     * @param string $languageToolDirectory
+     * @param string $languageToolLanguage
+     * @param string $enchantLanguage
+     * @param int    $languageToolServerPort
+     *
      * @throws \Exception
      */
-    public function __construct()
-    {
-        $this->startLanguageToolServer();
-        $this->broker = enchant_broker_init();
+    public function __construct(
+        $languageToolDirectory,
+        $languageToolLanguage,
+        $enchantLanguage,
+        $languageToolServerPort = 8081
+    ) {
+        $this->languageToolLanguage   = $languageToolLanguage;
+        $this->enchantLanguage        = $enchantLanguage;
+        $this->languageToolServerPort = $languageToolServerPort;
+        $this->startLanguageToolServer($languageToolDirectory);
 
-        if (!enchant_broker_dict_exists($this->broker, $this->enchant_language)) {
+        $this->languagetoolClientHttp = new Client();
+
+        $this->enchantBroker = enchant_broker_init();
+
+        if (!enchant_broker_dict_exists($this->enchantBroker, $this->enchantLanguage)) {
             throw new \Exception("Cannot find dictionnaries for enchant");
         } else {
-            $this->dictionnary = enchant_broker_request_dict($this->broker, $this->enchant_language);
+            $this->enchantDictionnary = enchant_broker_request_dict($this->enchantBroker, $this->enchantLanguage);
         }
     }
 
     public function __destruct()
     {
         $this->stopLanguageToolServer();
-        enchant_broker_free_dict($this->dictionnary);
-        enchant_broker_free($this->broker);
+        enchant_broker_free_dict($this->enchantDictionnary);
+        enchant_broker_free($this->enchantBroker);
     }
 
     /**
@@ -159,15 +176,19 @@ class GlSpellChecker
     }
 
     /**
-     * @param Finder $files
-     * @param callable  $checkfilestart
-     * @param callable  $checksentence
-     * @param callable  $checkfileend
+     * @param Finder   $files
+     * @param callable $checkfilestart
+     * @param callable $checksentence
+     * @param callable $checkfileend
      *
      * @return array
      */
-    public function checkHtmlFiles(Finder $files, callable $checkfilestart, callable $checksentence, callable $checkfileend)
-    {
+    public function checkHtmlFiles(
+        Finder $files,
+        callable $checkfilestart,
+        callable $checksentence,
+        callable $checkfileend
+    ) {
         $results = [];
         /**
          * @var SplFileInfo $file
@@ -181,10 +202,10 @@ class GlSpellChecker
             $sentences = $html->getSentences();
             $checkfilestart($file, count($sentences));
             $sentences = $this->checkSentences(
-                $sentences,
-                $checksentence
+                              $sentences,
+                                  $checksentence
             );
-            $htmlcode = $this->convertToHtml($title, $sentences);
+            $htmlcode  = $this->convertToHtml($title, $sentences);
 
             $checkerfile = sys_get_temp_dir() . "/" . uniqid("spellcheck") . ".html";
             file_put_contents($checkerfile, $htmlcode);
@@ -208,13 +229,17 @@ class GlSpellChecker
         array $sentences,
         callable $closure
     ) {
-        $url              = "http://localhost:{$this->port}";
-        $client           = new Client();
+        $url              = "http://localhost:{$this->languageToolServerPort}";
         $sentencesChecked = [];
         foreach ($sentences as $sentence) {
-            $response        = $client->get(
-                $url,
-                ['query' => ['language' => $this->languagetool_language, 'text' => $sentence]]
+            $response        = $this->languagetoolClientHttp->get(
+                                                            $url,
+                                                                [
+                                                                    'query' => [
+                                                                        'language' => $this->languageToolLanguage,
+                                                                        'text'     => $sentence
+                                                                    ]
+                                                                ]
             );
             $xml             = $response->getBody()->getContents();
             $glxml           = new GlHtml($xml);
@@ -229,9 +254,9 @@ class GlSpellChecker
                     $word   = null;
                     if ($error->getAttribute('locqualityissuetype') == 'misspelling') {
                         $word        = mb_substr($sentence, $offset, $length, 'UTF-8');
-                        $wordcorrect = enchant_dict_check($this->dictionnary, $word);
+                        $wordcorrect = enchant_dict_check($this->enchantDictionnary, $word);
                         if (!$wordcorrect) {
-                            $suggs = enchant_dict_suggest($this->dictionnary, $word);
+                            $suggs = enchant_dict_suggest($this->enchantDictionnary, $word);
                         }
                     }
                     $glerror = new GlSpellCheckerError($msg, $offset, $length, $word, $suggs);
@@ -245,18 +270,19 @@ class GlSpellChecker
         return $sentencesChecked;
     }
 
-    private
-    function startLanguageToolServer()
+    /**
+     * @param string $directory
+     */
+    private function startLanguageToolServer($directory)
     {
-        $jar     = "C:\\Glicer\\LanguageTool-2.8\\languagetool-server.jar";
-        $command = "java -cp $jar org.languagetool.server.HTTPServer --port {$this->port}";
+        $jar                      = $directory . "languagetool-server.jar";
+        $command                  = "java -cp $jar org.languagetool.server.HTTPServer --port {$this->languageToolServerPort}";
         $this->languagetoolServer = new Process($command);
         $this->languagetoolServer->start();
         sleep(3);
     }
 
-    private
-    function stopLanguageToolServer()
+    private function stopLanguageToolServer()
     {
         $this->languagetoolServer->stop();
         $this->languagetoolServer = null;
