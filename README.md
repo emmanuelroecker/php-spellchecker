@@ -45,9 +45,38 @@ php composer.phar install
     require 'vendor/autoload.php';
 
     use GlSpellChecker\GlSpellChecker;
+
+    //define languagetool directory, language to check and languagetool port used
+    $spellChecker  = new GlSpellChecker("C:\\Glicer\\LanguageTool-2.8\\", "fr", "fr_FR",8081);
+
+    //construct list of local html files to check spell
+    $finder = new Finder();
+    $files  = $finder->files()->in('./public')->name("*.html");
+
+    //launch html checking
+    $filereport = $spellchecker->checkHtmlFiles(
+                                        $files,
+                                            function (SplFileInfo $file, $nbrsentences) {
+                                                // called at beginning - $nbr sentences to check
+                                            },
+                                            function ($sentence) {
+                                                // called each sentence to check
+                                            },
+                                            function () {
+                                                // called at the end
+                                            }
+                );
+
+
+    //$filereport contain fullpath to html file report
+    print_r($filereport);
 ```
 
+you can view $filereport with your browser
+
 ## Running Tests
+
+Change LanguageTool directory and port in phpunit.xml.dist
 
 Launch from command line :
 
