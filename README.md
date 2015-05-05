@@ -12,7 +12,7 @@ It's working with :
 
 ## Install LanguageTool Server
 
-Download and dezip [LanguageTool 2.8 stand-alone for desktop](https://www.languagetool.org/) in a directory.
+Download and install [LanguageTool 2.8 stand-alone for desktop](https://www.languagetool.org/) in a directory.
 
 Java must be installed
 
