@@ -11,8 +11,7 @@
         </whitelist>
     </filter>
     <php>
-        <const name="WEB_SERVER_HOST" value="localhost" />
-        <const name="WEB_SERVER_PORT" value="1349" />
-        <const name="WEB_SERVER_DOCROOT" value="./tests/site1" />
+        <const name="LANGUAGETOOL_DIR" value="C:\\Glicer\\LanguageTool-2.8\\"/>
+        <const name="LANGUAGETOOL_PORT" value="8081"/>
     </php>
 </phpunit>
