@@ -45,9 +45,10 @@ php composer.phar install
     require 'vendor/autoload.php';
 
     use GlSpellChecker\GlSpellChecker;
+    use Symfony\Component\Finder\Finder;
 
     //define languagetool directory, language to check and languagetool port used
-    $spellChecker  = new GlSpellChecker("C:\\Glicer\\LanguageTool-2.8\\", "fr", "fr_FR",8081);
+    $spellchecker  = new GlSpellChecker("C:\\Glicer\\LanguageTool-2.8\\", "fr", "fr_FR",8081);
 
     //construct list of local html files to check spell
     $finder = new Finder();
