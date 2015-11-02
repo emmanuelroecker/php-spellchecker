@@ -1,0 +1,48 @@
+- title: "Présentation"
+  grouptitle: "Syntaxe Markdown"
+  createdate: 2015-11-01
+  updatedate: 2015-11-01
+  keywords: "markdown"
+  text: |
+        Markdown est un langage de balisage léger.
+        
+- title: "Paragraphes"
+  grouptitle: "Syntaxe Markdown"
+  createdate: 2015-11-01
+  updatedate: 2015-11-01
+  keywords: "markdown"
+  codename: ['markdown','html']
+  code:  |
+          ```md
+          Ceci est un 1ère paragraphe
+          
+          Ceci est un second paragraphe
+          ```
+  code1:  |
+          ```html
+          <p>Ceci est un 1ère paragraphe</p>
+          <p>Ceci est un second paragraphe</p>
+          ```
+  text: |
+        Un paragraphe est une ou plusieurs lignes consécutives de texte précédées par une ligne vide.
+        
+- title: "Titres"
+  grouptitle: "Syntaxe Markdown"
+  createdate: 2015-11-01
+  updatedate: 2015-11-01
+  keywords: "markdown"
+  codename: ['markdown','html']
+  code: |
+         ```md
+         # Titre de niveau 1
+         ## Titre de niveau 2
+         ###### Titre de niveau 6
+         ```
+  code1: |
+          ```html
+          <h1>Titre de niveau 1</h1>
+          <h2>Titre de niveau 2</h2>
+          <h6>Titre de niveau 6</h6>
+          ```
+  text: |
+        Les titres sont précédés par un à six caractères `#`, le nombre de caractères `#` représente leur niveau.

@@ -11,7 +11,7 @@
         </whitelist>
     </filter>
     <php>
-        <const name="LANGUAGETOOL_DIR" value="C:\\Glicer\\LanguageTool-2.8\\"/>
+        <const name="LANGUAGETOOL_DIR" value="C:\\Glicer\\LanguageTool\\"/>
         <const name="LANGUAGETOOL_PORT" value="8081"/>
     </php>
 </phpunit>

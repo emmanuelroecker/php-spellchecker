@@ -86,4 +86,28 @@ EOD;
 
         $this->assertEquals($sentences[0], "Est-ce que le code pousse sur les arbres ? - Blog de développement web");
     }
+
+    public function testCheck3()
+    {
+        $spellchecker = new GlSpellChecker(LANGUAGETOOL_DIR, "fr", "fr_FR", LANGUAGETOOL_PORT);
+
+        $finder = new Finder();
+        $files  = $finder->files()->in(__DIR__)->name("*.yml");
+
+        $results = $spellchecker->checkYamlFiles(
+                                $files,
+                                    ['text'],
+                                    function (SplFileInfo $file, $nbrsentences) {
+                                    },
+                                    function ($sentence) {
+                                    },
+                                    function () {
+                                    }
+        );
+
+        $html      = new GlHtml(file_get_contents($results[0]));
+        $sentences = $html->getSentences();
+        
+        $this->assertStringStartsWith("Markdown est un langage de balisage léger.",$sentences[1]);
+    }
 }

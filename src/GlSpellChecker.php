@@ -23,6 +23,8 @@ use GlHtml\GlHtml;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Finder\SplFileInfo;
 use Symfony\Component\Finder\Finder;
+use Symfony\Component\Yaml\Exception\ParseException;
+use Symfony\Component\Yaml\Yaml;
 use GuzzleHttp\Client;
 
 
@@ -173,6 +175,54 @@ class GlSpellChecker
         $html .= '<br><br><br></body></html>';
 
         return $html;
+    }
+
+    public function checkYamlFiles(
+        Finder $files,
+        array    $fields,
+        callable $checkfilestart,
+        callable $checksentence,
+        callable $checkfileend
+    ) {
+        $results = [];
+        /**
+         * @var SplFileInfo $file
+         */
+        foreach ($files as $file) {
+            try {
+                $data = Yaml::parse(
+                            file_get_contents(
+                                $file->getRealPath()
+                            )
+                );
+            } catch (ParseException $e) {
+                throw new \Exception("Unable to parse YAML string: {$e->getMessage()}");
+            }
+            $sentences = [];
+            foreach ($data as $item) {
+                foreach ($item as $key => $valueitem) {
+                    foreach ($fields as $field) {
+                        if ($key == $field) {
+                            $sentences[] = $valueitem;
+                        }
+                    }
+                }
+            }
+            $checkfilestart($file, count($sentences));
+            $sentences = $this->checkSentences(
+                              $sentences,
+                                  $checksentence
+            );
+            $htmlcode  = $this->convertToHtml($file->getFilename(), $sentences);
+
+            $checkerfile = sys_get_temp_dir() . "/" . uniqid("spellcheck") . ".html";
+            file_put_contents($checkerfile, $htmlcode);
+            $results[] = $checkerfile;
+
+            $checkfileend();
+        }
+
+        return $results;
     }
 
     /**
