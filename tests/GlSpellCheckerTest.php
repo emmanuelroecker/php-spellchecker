@@ -69,7 +69,7 @@ EOD;
         $spellchecker = new GlSpellChecker(LANGUAGETOOL_DIR, "fr", "fr_FR", LANGUAGETOOL_PORT);
 
         $finder = new Finder();
-        $files  = $finder->files()->in(__DIR__)->name("*.html");
+        $files  = $finder->files()->in(__DIR__)->name("le-code-pour-les-nouilles.html");
 
         $results = $spellchecker->checkHtmlFiles(
                                 $files,
@@ -109,5 +109,29 @@ EOD;
         $sentences = $html->getSentences();
         
         $this->assertStringStartsWith("Markdown est un langage de balisage léger.",$sentences[1]);
+    }
+
+    public function testCheck4()
+    {
+        $spellchecker = new GlSpellChecker(LANGUAGETOOL_DIR, "fr", "fr_FR", LANGUAGETOOL_PORT);
+
+        $finder = new Finder();
+        $files  = $finder->files()->in(__DIR__)->name("test.html");
+
+        $results = $spellchecker->checkHtmlFiles(
+                                $files,
+                                    function (SplFileInfo $file, $nbrsentences) {
+                                    },
+                                    function ($sentence) {
+                                    },
+                                    function () {
+                                    }
+        );
+
+        $html      = new GlHtml(file_get_contents($results[0]));
+        $sentences = $html->getSentences();
+
+        $this->assertEquals($sentences[0], "test.html");
+        $this->assertEquals($sentences[1], "il n'y a pas de titre");
     }
 }

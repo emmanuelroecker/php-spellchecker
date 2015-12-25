@@ -247,7 +247,13 @@ class GlSpellChecker
             $html = file_get_contents($file->getRealPath());
             $html = new GlHtml($html);
 
-            $title = $html->get("head title")[0]->getText();
+            $title = $html->get("head title");
+
+            if ($title && sizeof($title) > 0) {
+                $title = $title[0]->getText();
+            } else {
+                $title = $file->getFilename();
+            }
 
             $sentences = $html->getSentences();
             $checkfilestart($file, count($sentences));
