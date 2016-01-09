@@ -42,7 +42,7 @@ class GlSpellCheckerTest extends \PHPUnit_Framework_TestCase
 </html>
 EOD;
 
-        $spellchecker = new GlSpellChecker(LANGUAGETOOL_DIR, "fr", "fr_FR", LANGUAGETOOL_PORT);
+        $spellchecker = new GlSpellChecker("fr", "fr_FR", LANGUAGETOOL_DIR, LANGUAGETOOL_IP, LANGUAGETOOL_PORT);
 
         $html      = new GlHtml($html);
         $sentences = $html->getSentences();
@@ -66,7 +66,7 @@ EOD;
 
     public function testCheck2()
     {
-        $spellchecker = new GlSpellChecker(LANGUAGETOOL_DIR, "fr", "fr_FR", LANGUAGETOOL_PORT);
+        $spellchecker = new GlSpellChecker("fr", "fr_FR", LANGUAGETOOL_DIR, LANGUAGETOOL_IP, LANGUAGETOOL_PORT);
 
         $finder = new Finder();
         $files  = $finder->files()->in(__DIR__)->name("le-code-pour-les-nouilles.html");
@@ -89,7 +89,7 @@ EOD;
 
     public function testCheck3()
     {
-        $spellchecker = new GlSpellChecker(LANGUAGETOOL_DIR, "fr", "fr_FR", LANGUAGETOOL_PORT);
+        $spellchecker = new GlSpellChecker("fr", "fr_FR", LANGUAGETOOL_DIR, LANGUAGETOOL_IP, LANGUAGETOOL_PORT);
 
         $finder = new Finder();
         $files  = $finder->files()->in(__DIR__)->name("*.yml");
@@ -107,13 +107,13 @@ EOD;
 
         $html      = new GlHtml(file_get_contents($results[0]));
         $sentences = $html->getSentences();
-        
-        $this->assertStringStartsWith("Markdown est un langage de balisage léger.",$sentences[1]);
+
+        $this->assertStringStartsWith("Markdown est un langage de balisage léger.", $sentences[1]);
     }
 
     public function testCheck4()
     {
-        $spellchecker = new GlSpellChecker(LANGUAGETOOL_DIR, "fr", "fr_FR", LANGUAGETOOL_PORT);
+        $spellchecker = new GlSpellChecker("fr", "fr_FR", LANGUAGETOOL_DIR, LANGUAGETOOL_IP, LANGUAGETOOL_PORT);
 
         $finder = new Finder();
         $files  = $finder->files()->in(__DIR__)->name("test.html");

@@ -113,13 +113,21 @@ you can view $filereport with your browser
 
 ## Running Tests
 
-Change LanguageTool directory and port in phpunit.xml.dist
+Docker must be installed :
+
+```console
+docker pull silviof/docker-languagetool
+docker run --rm -p 8010:8010 silviof/docker-languagetool
+```
+
+Change LanguageTool ip/port in phpunit.xml.dist
 
 Launch from command line :
 
 ```console
 vendor\bin\phpunit
 ```
+## License MIT
 
 ## Contact
 

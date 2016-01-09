@@ -66,20 +66,26 @@ class GlSpellChecker
      * @param string $languageToolDirectory
      * @param string $languageToolLanguage
      * @param string $enchantLanguage
+     * @param string $languageToolServerIP
      * @param int    $languageToolServerPort
      *
      * @throws \Exception
      */
     public function __construct(
-        $languageToolDirectory,
         $languageToolLanguage,
         $enchantLanguage,
+        $languageToolDirectory = null,
+        $languageToolServerIP = 'localhost',
         $languageToolServerPort = 8081
     ) {
         $this->languageToolLanguage   = $languageToolLanguage;
         $this->enchantLanguage        = $enchantLanguage;
         $this->languageToolServerPort = $languageToolServerPort;
-        $this->startLanguageToolServer($languageToolDirectory);
+        $this->languageToolServerIP   = $languageToolServerIP;
+
+        if ($languageToolDirectory) {
+            $this->startLanguageToolServer($languageToolDirectory);
+        }
 
         $this->languagetoolClientHttp = new Client();
 
@@ -285,7 +291,7 @@ class GlSpellChecker
         array $sentences,
         callable $closure
     ) {
-        $url              = "http://localhost:{$this->languageToolServerPort}";
+        $url              = "http://{$this->languageToolServerIP}:{$this->languageToolServerPort}";
         $sentencesChecked = [];
         foreach ($sentences as $sentence) {
             $response        = $this->languagetoolClientHttp->get(
@@ -340,7 +346,9 @@ class GlSpellChecker
 
     private function stopLanguageToolServer()
     {
-        $this->languagetoolServer->stop();
-        $this->languagetoolServer = null;
+        if ($this->languagetoolServer) {
+            $this->languagetoolServer->stop();
+            $this->languagetoolServer = null;
+        }
     }
 } 
