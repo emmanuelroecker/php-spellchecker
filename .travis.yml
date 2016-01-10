@@ -6,6 +6,7 @@ php:
 services:
   - docker
 before_install:
+  - pecl install enchant
   - docker pull silviof/docker-languagetool
   - docker run -d -p 8010:8010 silviof/docker-languagetool
 install:
