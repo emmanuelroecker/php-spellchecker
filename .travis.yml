@@ -11,6 +11,8 @@ before_install:
   - docker run -d -p 8010:8010 silviof/docker-languagetool
 install:
   - composer install
+before_script: 
+  - phpenv config-add myconfig.ini
 script:
   - ./vendor/bin/phpunit --coverage-clover ./tests/logs/clover.xml
 after_script:
