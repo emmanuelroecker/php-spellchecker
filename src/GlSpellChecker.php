@@ -341,7 +341,6 @@ class GlSpellChecker
         $command                  = "java -cp $jar org.languagetool.server.HTTPServer --port {$this->languageToolServerPort}";
         $this->languagetoolServer = new Process($command);
         $this->languagetoolServer->start();
-        sleep(3);
     }
 
     private function stopLanguageToolServer()
