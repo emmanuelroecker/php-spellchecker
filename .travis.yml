@@ -7,9 +7,9 @@ services:
   - docker
 before_install:
   - docker pull silviof/docker-languagetool
-  - docker run --rm -p 8010:8010 silviof/docker-languagetool
+  - docker run -d -p 8010:8010 silviof/docker-languagetool
 install:
-  - travis_wait composer install
+  - composer install
 script:
   - ./vendor/bin/phpunit --coverage-clover ./tests/logs/clover.xml
 after_script:
