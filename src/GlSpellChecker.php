@@ -59,8 +59,8 @@ class GlSpellChecker
      * @var string
      */
     private $enchantLanguage = "fr_FR";
-    private $enchantDictionnary;
-    private $enchantBroker;
+    private $enchantDictionnary = null;
+    private $enchantBroker = null;
 
     /**
      * @param string $languageToolDirectory
@@ -89,20 +89,23 @@ class GlSpellChecker
 
         $this->languagetoolClientHttp = new Client();
 
-        $this->enchantBroker = enchant_broker_init();
-
-        if (!enchant_broker_dict_exists($this->enchantBroker, $this->enchantLanguage)) {
-            throw new \Exception("Cannot find dictionnaries for enchant");
-        } else {
-            $this->enchantDictionnary = enchant_broker_request_dict($this->enchantBroker, $this->enchantLanguage);
+        if (extension_loaded('enchant')) {
+            $this->enchantBroker = enchant_broker_init();
+            if (!enchant_broker_dict_exists($this->enchantBroker, $this->enchantLanguage)) {
+                throw new \Exception("Cannot find dictionnaries for enchant");
+            } else {
+                $this->enchantDictionnary = enchant_broker_request_dict($this->enchantBroker, $this->enchantLanguage);
+            }
         }
     }
 
     public function __destruct()
     {
         $this->stopLanguageToolServer();
-        enchant_broker_free_dict($this->enchantDictionnary);
-        enchant_broker_free($this->enchantBroker);
+        if ($this->enchantBroker) {
+            enchant_broker_free_dict($this->enchantDictionnary);
+            enchant_broker_free($this->enchantBroker);
+        }
     }
 
     /**
@@ -315,10 +318,12 @@ class GlSpellChecker
                     $suggs  = [];
                     $word   = null;
                     if ($error->getAttribute('locqualityissuetype') == 'misspelling') {
-                        $word        = mb_substr($sentence, $offset, $length, 'UTF-8');
-                        $wordcorrect = enchant_dict_check($this->enchantDictionnary, $word);
-                        if (!$wordcorrect) {
-                            $suggs = enchant_dict_suggest($this->enchantDictionnary, $word);
+                        $word = mb_substr($sentence, $offset, $length, 'UTF-8');
+                        if ($this->enchantDictionnary) {
+                            $wordcorrect = enchant_dict_check($this->enchantDictionnary, $word);
+                            if (!$wordcorrect) {
+                                $suggs = enchant_dict_suggest($this->enchantDictionnary, $word);
+                            }
                         }
                     }
                     $glerror = new GlSpellCheckerError($msg, $offset, $length, $word, $suggs);
