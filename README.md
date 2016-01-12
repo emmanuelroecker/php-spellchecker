@@ -10,10 +10,10 @@ Spell check html files
 It's working with :
 
 *   [LanguageTool](https://www.languagetool.org/)
-*   [Php Enchant](http://php.net/manual/en/book.enchant.php)
 *   [Guzzle](http://docs.guzzlephp.org)
 *   [Symfony Finder Component](http://symfony.com/doc/2.3/components/finder.html)
 *   [Glicer Simply-html Component](https://github.com/emmanuelroecker/php-simply-html)
+*   Optionally : [Php Enchant](http://php.net/manual/en/book.enchant.php)
 
 ## Install LanguageTool Server
 
@@ -32,7 +32,7 @@ Java must be installed
 
 Download and install [LanguageTool stand-alone for desktop](https://www.languagetool.org/) in a directory.
 
-## Enchant
+## Enchant (Optionally)
 
 [PECL Enchant](http://pecl.php.net/package/enchant) can be used
 
@@ -42,7 +42,7 @@ This library can be found on [Packagist](https://packagist.org/packages/glicer/s
 
 The recommended way to install is through [composer](http://getcomposer.org).
 
-Edit your `composer.json` and add:
+Edit your `composer.json` and add :
 
 ```json
 {
@@ -52,7 +52,7 @@ Edit your `composer.json` and add:
 }
 ```
 
-And install dependencies:
+Install dependencies :
 
 ```bash
 php composer.phar install
@@ -61,37 +61,36 @@ php composer.phar install
 ## How to spell check html files ?
 
 ```php
-<?php
-    require 'vendor/autoload.php';
+require 'vendor/autoload.php';
 
-    use GlSpellChecker\GlSpellChecker;
-    use Symfony\Component\Finder\Finder;
+use GlSpellChecker\GlSpellChecker;
+use Symfony\Component\Finder\Finder;
 
-    //language to check, define languagetool directory, and languagetool port used
-    $spellchecker  = new GlSpellChecker("fr", "fr_FR","C:\\Glicer\\LanguageTool\\",'localhost', 8081);
-    // or with docker $spellchecker = new GlSpellChecker("fr","fr_FR",null,'localhost',8010);
-    
-    //construct list of local html files to check spell
-    $finder = new Finder();
-    $files  = $finder->files()->in('./public')->name("*.html");
+//language to check, define languagetool directory, and languagetool port used
+$spellchecker  = new GlSpellChecker("fr", "fr_FR","C:\\Glicer\\LanguageTool\\",'localhost', 8081);
+// or with docker $spellchecker = new GlSpellChecker("fr","fr_FR",null,'localhost',8010);
 
-    //launch html checking
-    $filereport = $spellchecker->checkHtmlFiles(
-                                        $files,
-                                            function (SplFileInfo $file, $nbrsentences) {
-                                                // called at beginning - $nbr sentences to check
-                                            },
-                                            function ($sentence) {
-                                                // called each sentence to check
-                                            },
-                                            function () {
-                                                // called at the end
-                                            }
-                );
+//construct list of local html files to check spell
+$finder = new Finder();
+$files  = $finder->files()->in('./public')->name("*.html");
+
+//launch html checking
+$filereport = $spellchecker->checkHtmlFiles(
+                                    $files,
+                                        function (SplFileInfo $file, $nbrsentences) {
+                                            // called at beginning - $nbr sentences to check
+                                        },
+                                        function ($sentence) {
+                                            // called each sentence to check
+                                        },
+                                        function () {
+                                            // called at the end
+                                        }
+            );
 
 
-    //$filereport contain fullpath to html file report
-    print_r($filereport);
+//$filereport contain fullpath to html file report
+print_r($filereport);
 ```
 
 you can view $filereport with your browser
@@ -99,38 +98,37 @@ you can view $filereport with your browser
 ## How to spell check yaml files ?
 
 ```php
-<?php
-    require 'vendor/autoload.php';
+require 'vendor/autoload.php';
 
-    use GlSpellChecker\GlSpellChecker;
-    use Symfony\Component\Finder\Finder;
+use GlSpellChecker\GlSpellChecker;
+use Symfony\Component\Finder\Finder;
 
-    //define languagetool directory, language to check and languagetool port used
-    $spellchecker  = new GlSpellChecker("fr", "fr_FR","C:\\Glicer\\LanguageTool\\",'localhost',8081);
-    // or with docker $spellchecker = new GlSpellChecker("fr","fr_FR",null,'localhost',8010);
-    
-    //construct list of local html files to check spell
-    $finder = new Finder();
-    $files  = $finder->files()->in('./public')->name("*.yml");
+//define languagetool directory, language to check and languagetool port used
+$spellchecker  = new GlSpellChecker("fr", "fr_FR","C:\\Glicer\\LanguageTool\\",'localhost',8081);
+// or with docker $spellchecker = new GlSpellChecker("fr","fr_FR",null,'localhost',8010);
 
-    //launch html checking
-    $filereport = $spellchecker->checkYamlFiles(
-                                        $files,
-                                        ['test'], //list of fields to check
-                                            function (SplFileInfo $file, $nbrsentences) {
-                                                // called at beginning - $nbr sentences to check
-                                            },
-                                            function ($sentence) {
-                                                // called each sentence to check
-                                            },
-                                            function () {
-                                                // called at the end
-                                            }
-                );
+//construct list of local html files to check spell
+$finder = new Finder();
+$files  = $finder->files()->in('./public')->name("*.yml");
+
+//launch html checking
+$filereport = $spellchecker->checkYamlFiles(
+                                    $files,
+                                    ['test'], //list of fields to check
+                                        function (SplFileInfo $file, $nbrsentences) {
+                                            // called at beginning - $nbr sentences to check
+                                        },
+                                        function ($sentence) {
+                                            // called each sentence to check
+                                        },
+                                        function () {
+                                            // called at the end
+                                        }
+            );
 
 
-    //$filereport contain fullpath to html file report
-    print_r($filereport);
+//$filereport contain fullpath to html file report
+print_r($filereport);
 ```
 
 ## Running Tests
