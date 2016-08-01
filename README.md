@@ -23,7 +23,7 @@ It's working with :
 
 ```console
 docker pull silviof/docker-languagetool
-docker run -d -p 8010:8081 silviof/docker-languagetool
+docker run -d -p 8010:8010 silviof/docker-languagetool
 ```
 
 ### Or use stand-alone 
