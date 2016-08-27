@@ -25,6 +25,8 @@ use Symfony\Component\Finder\SplFileInfo;
 
 /**
  * @covers        \GlSpellChecker\GlSpellChecker
+ * @covers        \GlSpellChecker\GlSpellCheckerError
+ * @covers        \GlSpellChecker\GlSpellCheckerSentence
  * @backupGlobals disabled
  */
 class GlSpellCheckerTest extends \PHPUnit_Framework_TestCase
