@@ -23,8 +23,8 @@ It's working with :
 [Docker](http://www.docker.com/) must be installed
 
 ```console
-docker pull silviof/docker-languagetool
-docker run -d -p 8010:8010 silviof/docker-languagetool
+make docker_build
+make docker_run
 ```
 
 ### Or use stand-alone 
