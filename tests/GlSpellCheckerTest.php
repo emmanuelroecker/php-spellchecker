@@ -60,10 +60,9 @@ EOD;
                  "Cette phrase ne commence pas par une majuscule"
         );
         $this->assertEquals($sentences[1]->getText(), "bonjur les ami");
-        $this->assertEquals(
-             $sentences[1]->mergeErrors()[0]->getMessage(),
-                 "Cette phrase ne commence pas par une majuscule Faute de frappe possible trouvée"
-        );
+        $this->assertContains("Cette phrase ne commence pas par une majuscule",$sentences[1]->mergeErrors()[0]->getMessage());
+        $this->assertContains("Faute de frappe possible trouvée",$sentences[1]->mergeErrors()[0]->getMessage());
+
     }
 
     public function testCheck2()
@@ -135,14 +134,5 @@ EOD;
 
         $this->assertEquals($sentences[0], "test.html");
         $this->assertEquals($sentences[1], "il n'y a pas de titre");
-    }
-    
-    public function testCheckSentence()
-    {
-        //$spellchecker = new GlSpellChecker("fr", "fr_FR", LANGUAGETOOL_DIR, LANGUAGETOOL_IP, LANGUAGETOOL_PORT);
-        
-        //$checksentence = $spellchecker->checkSentence("c'est un tests");
-        
-        //var_dump($checksentence);        
     }
 }

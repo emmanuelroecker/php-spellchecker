@@ -283,41 +283,6 @@ class GlSpellChecker
     }
 
     /**
-     * @param string $sentence
-     *
-     * @return \GlSpellChecker\GlSpellCheckerSentence
-     */
-    public function checkSentence($sentence) {
-        $url              = "http://{$this->languageToolServerIP}:{$this->languageToolServerPort}/v2/";
-
-        $response        = $this->languagetoolClientHttp->post(
-                                                        $url,
-                                                            [
-                                                                'form_params' => [
-                                                                    'language' => $this->languageToolLanguage,
-                                                                    'text'     => $sentence,
-                                                                    'enabledOnly' => false
-                                                                ]
-                                                            ]
-        );
-        
-        $response = json_decode($response->getBody()->getContents());
-
-        $sentenceChecked = new GlSpellCheckerSentence($sentence);
-        foreach ($response['matches'] as $match) {
-            $msg    = $match['message'];
-            $offset = (int)$match['offset'];
-            $length = (int)$match['length'];
-            $replacements = array_values($match['replacements']);
-            $word   = null;
-            $glerror = new GlSpellCheckerError($msg, $offset, $length, $word, $replacements);
-            $sentenceChecked->addError($glerror);
-        }
-        
-        return $sentenceChecked;
-    }
-    
-    /**
      * @param array    $sentences
      *
      * @param callable $closure
