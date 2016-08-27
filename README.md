@@ -2,7 +2,7 @@
 
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/emmanuelroecker/php-spellchecker/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/emmanuelroecker/php-spellchecker/?branch=master)
 [![Build Status](https://travis-ci.org/emmanuelroecker/php-spellchecker.svg?branch=master)](https://travis-ci.org/emmanuelroecker/php-spellchecker)
-[![Coverage Status](https://coveralls.io/repos/emmanuelroecker/php-spellchecker/badge.svg?branch=master&service=github)](https://coveralls.io/github/emmanuelroecker/php-spellchecker?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/emmanuelroecker/php-spellchecker/badge.svg?branch=master)](https://coveralls.io/github/emmanuelroecker/php-spellchecker?branch=master)
 [![SensioLabsInsight](https://insight.sensiolabs.com/projects/f2022454-9dc8-424d-8b19-0764dcc5b7d1/mini.png)](https://insight.sensiolabs.com/projects/f2022454-9dc8-424d-8b19-0764dcc5b7d1)
 [![Dependency Status](https://www.versioneye.com/user/projects/57c17823968d6400395169a2/badge.svg?style=flat-square)](https://www.versioneye.com/user/projects/57c17823968d6400395169a2)
 

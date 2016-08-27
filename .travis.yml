@@ -6,8 +6,8 @@ php:
 services:
   - docker
 before_install:
-  - docker pull silviof/docker-languagetool
-  - docker run -d -p 8010:8010 silviof/docker-languagetool
+  - make docker_build
+  - make docker_run
 install:
   - composer install
 script:

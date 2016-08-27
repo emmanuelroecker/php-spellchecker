@@ -136,4 +136,13 @@ EOD;
         $this->assertEquals($sentences[0], "test.html");
         $this->assertEquals($sentences[1], "il n'y a pas de titre");
     }
+    
+    public function testCheckSentence()
+    {
+        //$spellchecker = new GlSpellChecker("fr", "fr_FR", LANGUAGETOOL_DIR, LANGUAGETOOL_IP, LANGUAGETOOL_PORT);
+        
+        //$checksentence = $spellchecker->checkSentence("c'est un tests");
+        
+        //var_dump($checksentence);        
+    }
 }
