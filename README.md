@@ -14,7 +14,7 @@ It's working with :
 *   [Guzzle](http://docs.guzzlephp.org)
 *   [Symfony Finder Component](http://symfony.com/doc/2.3/components/finder.html)
 *   [Glicer Simply-html Component](https://github.com/emmanuelroecker/php-simply-html)
-*   Optionally : [Php Enchant](http://php.net/manual/en/book.enchant.php)
+*   Optionally for spell suggestions : [Php Enchant](http://php.net/manual/en/book.enchant.php)
 
 ## Install LanguageTool Server
 
@@ -33,9 +33,15 @@ Java must be installed
 
 Download and install [LanguageTool stand-alone for desktop](https://www.languagetool.org/) in a directory.
 
-## Enchant (Optionally)
+## Enchant (Optionally for spell suggestions)
 
 [PECL Enchant](http://pecl.php.net/package/enchant) can be used
+
+```console
+sudo apt-get install php5.6-enchant
+```
+
+languages dictionnaries are in `dicts` dictionnary
 
 ## Install php-spellchecker
 

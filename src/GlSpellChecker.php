@@ -91,6 +91,9 @@ class GlSpellChecker
 
         if (extension_loaded('enchant')) {
             $this->enchantBroker = enchant_broker_init();
+
+            enchant_broker_set_dict_path($this->enchantBroker, ENCHANT_MYSPELL, __DIR__ . '/../dicts');
+
             if (!enchant_broker_dict_exists($this->enchantBroker, $this->enchantLanguage)) {
                 throw new \Exception("Cannot find dictionnaries for enchant");
             } else {
@@ -114,37 +117,13 @@ class GlSpellChecker
      *
      * @return string
      */
-    public function convertToHtml($title, $sentences)
+    public static function convertToHtml($title, $sentences)
     {
         $html = '<!DOCTYPE HTML>';
         $html .= '<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
         $html .= '<title>' . $title . '</title>';
         $html .= '<style>';
         $html .= '.error {  color: red  }';
-
-        $html .= '.tooltip
-                    {
-                        display: inline;
-                        position: relative;
-                        text-decoration: none;
-                        top: 0px;
-                        left: 0px;
-                    }';
-
-        $html .= '.tooltip:hover:after
-                    {
-                        background: #333;
-                        background: rgba(0,0,0,.8);
-                        border-radius: 5px;
-                        top: -5px;
-                        color: #fff;
-                        content: attr(data-tooltip);
-                        left: 160px;
-                        padding: 5px 15px;
-                        position: absolute;
-                        z-index: 98;
-                        width: 150px;
-                    }';
         $html .= '</style>';
         $html .= '</head><body>';
 
@@ -172,7 +151,7 @@ class GlSpellChecker
                     $tooltip .= " : " . $suggs[0];
                 }
                 $zone = mb_substr($text, $offset, $length, 'UTF-8');
-                $cons .= '<span class="error tooltip" data-tooltip="' . $tooltip . '">' . $zone . '</span>';
+                $cons .= '<span class="error" title="' . $tooltip . '">' . $zone . '</span>';
 
                 $start = $offset + $length;
             }
@@ -297,16 +276,16 @@ class GlSpellChecker
         $url              = "http://{$this->languageToolServerIP}:{$this->languageToolServerPort}";
         $sentencesChecked = [];
         foreach ($sentences as $sentence) {
-            $response        = $this->languagetoolClientHttp->get(
-                                                            $url,
-                                                                [
-                                                                    'query' => [
-                                                                        'language' => $this->languageToolLanguage,
-                                                                        'text'     => $sentence
-                                                                    ]
-                                                                ]
+            $response = $this->languagetoolClientHttp->get(
+                                                     $url,
+                                                         [
+                                                             'query' => [
+                                                                 'language' => $this->languageToolLanguage,
+                                                                 'text'     => $sentence
+                                                             ]
+                                                         ]
             );
-            $xml             = $response->getBody()->getContents();
+            $xml      = $response->getBody()->getContents();
             $glxml           = new GlHtml($xml);
             $errors          = $glxml->get('error');
             $sentenceChecked = new GlSpellCheckerSentence($sentence);
